@@ -1,3 +1,9 @@
+#!/usr/bin/env ruby
+# Written by Diego Mota
+# GNU General Public License v3.0
+require 'date'
+require 'prawn'
+require 'roo'
 require "elam/version"
 
 module Elam
@@ -8,13 +14,13 @@ module Elam
     attr_accessor :modes, :tenses, :types, :verb_forms, :negation, :pronouns, :auxiliar, :modal, :verbs, :subjects, :verb_list
 
     def initialize
-    	@modes = [:afirmative, :negative, :interrogative]
-    	@tenses = [:present, :past, :future]
+      @modes = [:afirmative, :negative, :interrogative]
+      @tenses = [:present, :past, :future]
       @types = [:simple, :continuous]
       @verb_forms = [:infinitive, :simple, :past, :third, :gerund, :participle]
       @negation = { en: 'not', es: 'no' }
       @subjects = ['pronoun', 'verb_form', 'auxiliar', 'simple', 'continuous', 'simple_perfect', 'continuous_perfect', 'modal', 'indicative']
-    	@pronouns = {
+      @pronouns = {
         singular_1st: { en: 'I', es: 'yo' },
         singular_2nd: { en: 'you(s)', es: 'tú' },
         singular_3rd_m: { en: 'he', es: 'él' }, 
@@ -46,9 +52,9 @@ module Elam
         },
         es: {
           simple: { 
-          	present: { 0 => nil, 1 => nil, 3 => nil },
-          	past: { 0 => nil, 1 => nil, 3 => nil }, 
-          	future: { 0 => nil, 1 => nil, 3 => nil } 
+            present: { 0 => nil, 1 => nil, 3 => nil },
+            past: { 0 => nil, 1 => nil, 3 => nil }, 
+            future: { 0 => nil, 1 => nil, 3 => nil } 
           },
           continuous: { 
             present: { 1 => 'estoy', 2 => 'estas', 3 => 'esta', 6 => 'estamos', 8 => 'estan' },
@@ -81,9 +87,9 @@ module Elam
       @could = @may = @might = { 0 => 'poder', 1 => 'podria', 2 => 'podrias', 3 => 'podria', 6 => 'podriamos', 8 => 'podrian' }
       @modal = {
         en: {
-        	name: { would: 'would', can: 'can', could: 'could', may: 'may', might: 'might', must: 'must', should: 'should', shall: 'shall', ought_to: 'ought to' },
-        	continuous: 'be',
-        	perfective: { infinitive: 'have', complement: 'been' }
+          name: { would: 'would', can: 'can', could: 'could', may: 'may', might: 'might', must: 'must', should: 'should', shall: 'shall', ought_to: 'ought to' },
+          continuous: 'be',
+          perfective: { infinitive: 'have', complement: 'been' }
         },
         es: {
           simple: {
@@ -96,7 +102,7 @@ module Elam
             plural_2nd: { would: nil, can: @can[8], could: @could[8], may: @may[8], might: @might[8], must: @must[8], shall: @shall[8], should: @should[8], ought_to: @ought_to[8] },
             plural_3rd: { would: nil, can: @can[8], could: @could[8], may: @may[8], might: @might[8], must: @must[8], shall: @shall[8], should: @should[8], ought_to: @ought_to[8] }},
           continuous: {
-          	infinitive: 'estar',
+            infinitive: 'estar',
             singular_1st: { would: 'estaría', can: @can[1], could: @could[1], may: @may[1], might: @might[1], must: @must[1], shall: @shall[1], should: @should[1], ought_to: @ought_to[1] },
             singular_2nd: { would: 'estarías', can: @can[2], could: @could[2], may: @may[2], might: @might[2], must: @must[2], shall: @shall[2], should: @should[2], ought_to: @ought_to[2] },
             singular_3rd_m: { would: 'estaría', can: @can[3], could: @could[3], may: @may[3], might: @might[3], must: @must[3], shall: @shall[3], should: @should[3], ought_to: @ought_to[3] },
@@ -106,7 +112,7 @@ module Elam
             plural_2nd: { would: 'estarían', can: @can[8], could: @could[8], may: @may[8], might: @might[8], must: @must[8], shall: @shall[8], should: @should[8], ought_to: @ought_to[8] },
             plural_3rd: { would: 'estarían', can: @can[8], could: @could[8], may: @may[8], might: @might[8], must: @must[8], shall: @shall[8], should: @should[8], ought_to: @ought_to[8] }},
           perfective: {
-          	infinitive: 'haber', complement: 'estado',
+            infinitive: 'haber', complement: 'estado',
             singular_1st: { would: 'habría', can: @can[1], could: @could[1], may: @may[1], might: @might[1], must: @must[1], shall: @shall[1], should: @should[1], ought_to: @ought_to[1] },
             singular_2nd: { would: 'habrías', can: @can[2], could: @could[2], may: @may[2], might: @might[2], must: @must[2], shall: @shall[2], should: @should[2], ought_to: @ought_to[2] },
             singular_3rd_m: { would: 'habría', can: @can[3], could: @could[3], may: @may[3], might: @might[3], must: @must[3], shall: @shall[3], should: @should[3], ought_to: @ought_to[3] },
@@ -270,7 +276,7 @@ module Elam
         }
       }
       @verb_list = {
-      	test: [:to_consolidate, :to_control, :to_harvest, :to_debut, :to_defeat, :to_rest, :to_love, :to_dance, :to_change, :to_charge],
+        test: [:to_consolidate, :to_control, :to_harvest, :to_debut, :to_defeat, :to_rest, :to_love, :to_dance, :to_change, :to_charge],
         reg1: [:to_repel, :to_open, :to_applaud, :to_asist, :to_depart, :to_allow, :to_succumb, :to_suffer, :to_need, :to_work],
         reg2: [:to_smoke, :to_arrive, :to_use, :to_travel, :to_kick, :to_listen, :to_park, :to_call, :to_blink, :to_trade],
         reg3: [:to_like, :to_participate, :to_study, :to_try, :to_wash, :to_paint, :to_ask, :to_introduce, :to_process],
@@ -283,46 +289,46 @@ module Elam
 
 
     def quiz subject, quiz_items: false, student: false, type: false, output: false
-    	quiz_items = 1 if quiz_items == false
-    	student = nil if student == false
+      quiz_items = 1 if quiz_items == false
+      student = nil if student == false
       route = Proc.new { |file| "lib/questionnaire/english/indicative/#{file}.xlsx" }
-    	quiz = { 
-    		subject: subject, quiz_items: quiz_items, student: student, date: "#{DateTime.now.strftime("%d/%m/%Y-%H:%M")}",
-    		theory: Hash.new, practice: Hash.new
-    	 }
+      quiz = { 
+        subject: subject, quiz_items: quiz_items, student: student, date: "#{DateTime.now.strftime("%d/%m/%Y-%H:%M")}",
+        theory: Hash.new, practice: Hash.new
+       }
 
-    	theory = Proc.new do
+      theory = Proc.new do
         quiz_items.times do |i|
-    	    if subject == 'pronoun' then quiz[:theory].store(i, theory(route['01_pronombres_personales'])) end
-    	    if subject == 'verb_form' then quiz[:theory].store(i, theory(route['02_formas_verbales'])) end
-    	    if subject == 'auxiliar' then quiz[:theory].store(i, theory(route['03_auxiliares'])) end
-    	    if subject == 'simple' then quiz[:theory].store(i, theory(route['04_tiempos_simples'])) end
-    	    if subject == 'continuous' then quiz[:theory].store(i, theory(route['05_tiempos_continuos'])) end
-    	    if subject == 'simple_perfect' then quiz[:theory].store(i, theory(route['06_tiempos_perfectos_simples'])) end
-    	    if subject == 'continuous_perfect' then quiz[:theory].store(i, theory(route['07_tiempos_perfectos_continuos'])) end
-    	    if subject == 'modal' then quiz[:theory].store(i, theory(route['08_modal_verbs'])) end
-    	    if subject == 'indicative' then quiz[:theory].store(i, theory(route['09_practica'])) end
+          if subject == 'pronoun' then quiz[:theory].store(i, theory(route['01_pronombres_personales'])) end
+          if subject == 'verb_form' then quiz[:theory].store(i, theory(route['02_formas_verbales'])) end
+          if subject == 'auxiliar' then quiz[:theory].store(i, theory(route['03_auxiliares'])) end
+          if subject == 'simple' then quiz[:theory].store(i, theory(route['04_tiempos_simples'])) end
+          if subject == 'continuous' then quiz[:theory].store(i, theory(route['05_tiempos_continuos'])) end
+          if subject == 'simple_perfect' then quiz[:theory].store(i, theory(route['06_tiempos_perfectos_simples'])) end
+          if subject == 'continuous_perfect' then quiz[:theory].store(i, theory(route['07_tiempos_perfectos_continuos'])) end
+          if subject == 'modal' then quiz[:theory].store(i, theory(route['08_modal_verbs'])) end
+          if subject == 'indicative' then quiz[:theory].store(i, theory(route['09_practica'])) end
         end
-    	end
+      end
 
-    	practice = Proc.new do
-    	  quiz_items.times do |i|
-    	    if subject == 'pronoun' then quiz[:practice].store(i, pronoun) end
-    	    if subject == 'verb_form' then quiz[:practice].store(i, verb_form(@verb_list[:reg1])) end
-    	    if subject == 'auxiliar' then quiz[:practice].store(i, auxiliar) end
-    	    if subject == 'simple'
+      practice = Proc.new do
+        quiz_items.times do |i|
+          if subject == 'pronoun' then quiz[:practice].store(i, pronoun) end
+          if subject == 'verb_form' then quiz[:practice].store(i, verb_form(@verb_list[:reg1])) end
+          if subject == 'auxiliar' then quiz[:practice].store(i, auxiliar) end
+          if subject == 'simple'
             quiz[:practice].store(i, practice(type: :simple, tense: @tenses.sample, mode: @modes.sample, noun: @pronouns.keys.sample)) 
           end
-    	    if subject == 'continuous'
+          if subject == 'continuous'
             quiz[:practice].store(i, practice(type: :continuous, tense: @tenses.sample, mode: @modes.sample, noun: @pronouns.keys.sample)) 
           end
-    	    if subject == 'simple_perfect'
+          if subject == 'simple_perfect'
             quiz[:practice].store(i, practice(perfective: :simple, tense: @tenses.sample, mode: @modes.sample, noun: @pronouns.keys.sample)) 
           end
-    	  	if subject == 'continuous_perfect'
+          if subject == 'continuous_perfect'
             quiz[:practice].store(i, practice(perfective: :continuous, tense: @tenses.sample, mode: @modes.sample, noun: @pronouns.keys.sample)) 
           end
-    	  	if subject == 'indicative'
+          if subject == 'indicative'
             case rand(2)
             when 0 # => non perfectives
               type == @types.sample
@@ -350,29 +356,29 @@ module Elam
             end
           end
           if subject == 'modal'
-    	  		modal = @modal[:en][:name].keys.sample
-    	  		perfective = @types.sample
-    	  		case rand(2)
-    	  		when 0 # => perfective
-    	  		  quiz[:practice].store(i, practice(perfective: perfective, modal: modal, mode: @modes.sample, noun: @pronouns.keys.sample))
-    	  		when 1 # => non perfective
-    	  			quiz[:practice].store(i, practice(type: perfective, modal: modal, mode: @modes.sample, noun: @pronouns.keys.sample))
-    	  		end
-    	  	end
-    	  end
-    	end
+            modal = @modal[:en][:name].keys.sample
+            perfective = @types.sample
+            case rand(2)
+            when 0 # => perfective
+              quiz[:practice].store(i, practice(perfective: perfective, modal: modal, mode: @modes.sample, noun: @pronouns.keys.sample))
+            when 1 # => non perfective
+              quiz[:practice].store(i, practice(type: perfective, modal: modal, mode: @modes.sample, noun: @pronouns.keys.sample))
+            end
+          end
+        end
+      end
 
-    	case type
-    	when :theory
-    		theory.call
-    		quiz.delete(:practice)
-    	when :practice
-    		practice.call
-    		quiz.delete(:theory)
-    	when :both
-    		theory.call
-    		practice.call
-    	end
+      case type
+      when :theory
+        theory.call
+        quiz.delete(:practice)
+      when :practice
+        practice.call
+        quiz.delete(:theory)
+      when :both
+        theory.call
+        practice.call
+      end
       return set_output quiz, output: output
     end
 
@@ -445,8 +451,8 @@ module Elam
       end
       
       question = {
-      	question: { type: type, tense: tense, noun: noun },
-      	answer: { en: auxiliar[:en], es: auxiliar[:es] }
+        question: { type: type, tense: tense, noun: noun },
+        answer: { en: auxiliar[:en], es: auxiliar[:es] }
       }
 
       return question
@@ -771,85 +777,85 @@ module Elam
 
     def get_auxiliar tense: false, type: false, noun: false, perfective: false
       non_perfect = Proc.new do |tense, type, noun|
-    		en_aux = @auxiliar[:en][type][tense][conjugation(noun)[:en]]
-    		es_aux = @auxiliar[:es][type][tense][conjugation(noun)[:es]]
-    		if type == :simple
-    			en_comp = nil
-    			es_comp = nil
+        en_aux = @auxiliar[:en][type][tense][conjugation(noun)[:en]]
+        es_aux = @auxiliar[:es][type][tense][conjugation(noun)[:es]]
+        if type == :simple
+          en_comp = nil
+          es_comp = nil
         else # => continuous
-    			en_comp = @auxiliar[:en][type][:complement] if tense == :future
-    			es_comp = nil
-    		end
-    		return { en: [en_aux, en_comp].compact, es: [es_aux, es_comp].compact }
-    	end
-
-    	perfect = Proc.new do |tense, type, noun|
-    		en_aux = @auxiliar[:en][:perfective][tense][conjugation(noun)[:en]]
-    		es_aux = @auxiliar[:es][:perfective][tense][conjugation(noun)[:es]]
-    		if type == :simple
-        	en_comp = @auxiliar[:en][:perfective][:complement]
-    			es_comp = nil
-        else # => continuous
-        	en_comp = @auxiliar[:en][:perfective][:complement]
-    			es_comp = @auxiliar[:es][:perfective][:complement]
+          en_comp = @auxiliar[:en][type][:complement] if tense == :future
+          es_comp = nil
         end
         return { en: [en_aux, en_comp].compact, es: [es_aux, es_comp].compact }
-    	end
+      end
 
-    	if perfective
-    		case perfective
-    		  when  :simple
+      perfect = Proc.new do |tense, type, noun|
+        en_aux = @auxiliar[:en][:perfective][tense][conjugation(noun)[:en]]
+        es_aux = @auxiliar[:es][:perfective][tense][conjugation(noun)[:es]]
+        if type == :simple
+          en_comp = @auxiliar[:en][:perfective][:complement]
+          es_comp = nil
+        else # => continuous
+          en_comp = @auxiliar[:en][:perfective][:complement]
+          es_comp = @auxiliar[:es][:perfective][:complement]
+        end
+        return { en: [en_aux, en_comp].compact, es: [es_aux, es_comp].compact }
+      end
+
+      if perfective
+        case perfective
+          when  :simple
             perfect[tense, perfective, noun]
           when  :continuous
-    			  perfect[tense, perfective, noun]
-    		end
-    	else
-    	  non_perfect[tense, type, noun]
-    	end
+            perfect[tense, perfective, noun]
+        end
+      else
+        non_perfect[tense, type, noun]
+      end
     end
 
 
     def get_modal modal: false,  type: false, noun: false, perfective: false
-    	non_perfect = Proc.new do |modal, type, noun|
-    		en_aux = @modal[:en][:name][modal]
-    		es_aux = @modal[:es][type][noun][modal]
-    		if type == :simple
-    			en_comp = nil
-    			es_comp = nil
+      non_perfect = Proc.new do |modal, type, noun|
+        en_aux = @modal[:en][:name][modal]
+        es_aux = @modal[:es][type][noun][modal]
+        if type == :simple
+          en_comp = nil
+          es_comp = nil
         else # => continuous
-    			en_comp = @modal[:en][type]
-   				unless modal == :would then es_comp = @modal[:es][type][:infinitive] end
-    		end
-        return { en: [en_aux, en_comp].compact, es: [es_aux, es_comp].compact }
-    	end
-    	
-    	perfect = Proc.new do |tense, perfective, noun|
-    		en_aux = @modal[:en][:name][modal]
-    		es_aux = @modal[:es][:perfective][noun][modal]
-    		if perfective == :simple
-        	en_comp = @modal[:en][:perfective][:infinitive]
-    			unless modal == :would then es_comp = @modal[:es][:perfective][:infinitive] end
-        else # => continuous
-        	en_comp = "#{@modal[:en][:perfective][:infinitive]} #{@modal[:en][:perfective][:complement]}"
-    			if modal == :would
-    			  es_comp = "#{@modal[:es][:perfective][:complement]}"
-    			 else
-    			 	es_comp = "#{@modal[:es][:perfective][:infinitive]} #{@modal[:es][:perfective][:complement]}"
-    			 end
+          en_comp = @modal[:en][type]
+           unless modal == :would then es_comp = @modal[:es][type][:infinitive] end
         end
         return { en: [en_aux, en_comp].compact, es: [es_aux, es_comp].compact }
-    	end
-    	
-    	if perfective
-    		case perfective
-    		  when  :simple
+      end
+      
+      perfect = Proc.new do |tense, perfective, noun|
+        en_aux = @modal[:en][:name][modal]
+        es_aux = @modal[:es][:perfective][noun][modal]
+        if perfective == :simple
+          en_comp = @modal[:en][:perfective][:infinitive]
+          unless modal == :would then es_comp = @modal[:es][:perfective][:infinitive] end
+        else # => continuous
+          en_comp = "#{@modal[:en][:perfective][:infinitive]} #{@modal[:en][:perfective][:complement]}"
+          if modal == :would
+            es_comp = "#{@modal[:es][:perfective][:complement]}"
+           else
+             es_comp = "#{@modal[:es][:perfective][:infinitive]} #{@modal[:es][:perfective][:complement]}"
+           end
+        end
+        return { en: [en_aux, en_comp].compact, es: [es_aux, es_comp].compact }
+      end
+      
+      if perfective
+        case perfective
+          when  :simple
             perfect[modal, perfective, noun]
           when  :continuous
-    			  perfect[modal, perfective, noun]
-    		end
-    	else
-    	  non_perfect[modal, type, noun]
-    	end
+            perfect[modal, perfective, noun]
+        end
+      else
+        non_perfect[modal, type, noun]
+      end
     end
 
 
